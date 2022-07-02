@@ -13,7 +13,7 @@ const video = ref<Video>({
 const {
   isReady,
   convertToGIF,
-  output: imageSrc,
+  output,
   isConverting,
   isSupported,
   load
@@ -90,11 +90,11 @@ onMounted(() => {
         <div class="bg-white rounded md:shadow p-4">
           <div class="flex items-center justify-center h-full">
             <div
-              v-if="imageSrc"
+              v-if="output"
               class="text-center"
             >
               <img
-                :src="imageSrc"
+                :src="output"
                 alt="output gif"
                 class="mb-4"
               >
