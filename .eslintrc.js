@@ -1,37 +1,68 @@
 module.exports = {
   env: {
-    browser: true,
-    es2020: true,
+    'browser': true,
+    'es6': true,
+    'node': true
   },
+  overrides: [
+    {
+      files: ['*.vue'],
+      parser: 'vue-eslint-parser',
+      parserOptions: {
+        parser: '@typescript-eslint/parser'
+      },
+      rules: {
+        'no-unused-vars': 'off',
+        'no-undef': 'off',
+        '@typescript-eslint/no-unused-vars': 'off'
+      }
+    }
+  ],
   extends: [
-    'airbnb-base',
-    'plugin:vue/recommended',
+    'eslint:recommended',
+    'plugin:vue/vue3-recommended',
+    'plugin:vue/vue3-essential',
+    '@vue/eslint-config-typescript'
   ],
-  parser: 'vue-eslint-parser',
   parserOptions: {
-    parser: 'babel-eslint',
-    ecmaVersion: 11,
-    sourceType: 'module',
+    'ecmaVersion': 12,
+    'sourceType': 'module'
   },
-  plugins: [
-    'vue',
-  ],
   rules: {
-    /**
-     * The reactivity system in Vuex is built around mutating
-     * properties in function parameters, so we ignore those
-     * https://stackoverflow.com/a/44658727
-     */
-    'no-param-reassign': ['error', {
-      ignorePropertyModificationsFor: [
-        'state',
-      ],
+    'object-curly-spacing': [2, 'always'],
+    'no-trailing-spaces': 'error',
+    'vue/max-attributes-per-line': ['error', {
+      'singleline': {
+        'max': 1
+      },
+      'multiline': {
+        'max': 1
+      }
     }],
-    /**
-     * Our Vue-specific styleguide says that we should use 4 spaces for
-     * indentation in Vue-templates. The default value is 2, so we have
-     * to override it.
-     */
-    'vue/html-indent': ['error', 4],
-  },
-};
+    'vue/no-v-html': 'off',
+    'vue/require-prop-types': 'off',
+    'vue/require-default-prop': 'off',
+    'vue/multi-word-component-names': 'off',
+    'vue/html-self-closing': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
+    'vue/multiline-html-element-content-newline': 'off',
+    'comma-dangle': ['error', 'never'],
+    'indent': [
+      'error',
+      2,
+      { 'SwitchCase': 1 }
+    ],
+    'linebreak-style': [
+      'error',
+      'unix'
+    ],
+    'quotes': [
+      'error',
+      'single'
+    ],
+    'semi': [
+      'error',
+      'never'
+    ]
+  }
+}
