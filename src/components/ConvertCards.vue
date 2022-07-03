@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { Video } from '../models/video'
-import ConvertButton from './ConvertButton.vue'
 import { useConverterStore } from '../store/converter'
 import { storeToRefs } from 'pinia'
+import ConvertButton from './ConvertButton.vue'
 
 const video = ref<Video>({ name: '', uri: '', type: '' })
 
 const converterStore = useConverterStore()
-const { load, convertToGIF } = converterStore
-const { isReady, output, isConverting, isSupported } = storeToRefs(converterStore)
+const { loadFFmpeg, convertToGIF } = converterStore
+const { isReady, isConverting, isSupported, output } = storeToRefs(converterStore)
 
 const updatePreview = (e: Event): void => {
   const files = e?.target?.files ?? []
@@ -28,7 +28,7 @@ const downloadBlob = (): void => {
 }
 
 onMounted(() => {
-  load()
+  loadFFmpeg()
 })
 </script>
 
@@ -72,7 +72,10 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div class="bg-white rounded md:shadow p-4">
+    <div
+      class="bg-white rounded md:shadow p-4"
+      :class="{'opacity-50': !output}"
+    >
       <div class="flex items-center justify-center h-full">
         <div
           v-if="output"

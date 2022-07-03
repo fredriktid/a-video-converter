@@ -12,7 +12,7 @@ export const useConverterStore = defineStore('converter', {
     output: ''
   }),
   actions: {
-    async load(): Promise<void> {
+    async loadFFmpeg(): Promise<void> {
       try {
         await ffmpeg.load()
         this.isReady = true
