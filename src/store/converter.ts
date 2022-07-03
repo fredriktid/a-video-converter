@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
-import { Video } from '../models/video'
+import { Video, VideoFormat } from '../models/video'
 
 const ffmpeg = createFFmpeg({ log: false })
 
@@ -21,16 +21,16 @@ export const useConverterStore = defineStore('converter', {
         this.isSupported = false
       }
     },
-    async convertToGIF(video: Video): Promise<void> {
+    async convertToFormat(video: Video, format: VideoFormat): Promise<void> {
       this.isConverting = true
       this.output = ''
 
-      const tempName = `${Date.now()}.gif`
+      const tempName = `${Date.now()}.${format.extension}`
       ffmpeg.FS('writeFile', video.name, await fetchFile(video.uri))
       await ffmpeg.run('-i', video.name, tempName)
       const data = ffmpeg.FS('readFile', tempName)
 
-      this.output = URL.createObjectURL(new Blob([data.buffer], { type: 'image/gif' }))
+      this.output = URL.createObjectURL(new Blob([data.buffer], { type: format.mimeType }))
       this.isConverting = false
     }
   }

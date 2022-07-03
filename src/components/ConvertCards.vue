@@ -1,15 +1,21 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Video } from '../models/video'
+import { Video, VideoFormat } from '../models/video'
 import { useConverterStore } from '../store/converter'
 import { storeToRefs } from 'pinia'
 import ConvertButton from './ConvertButton.vue'
 
-const video = ref<Video>({ name: '', uri: '', type: '' })
+const video = ref<Video>({ name: '', uri: '', format: null })
 
 const converterStore = useConverterStore()
-const { loadFFmpeg, convertToGIF } = converterStore
+const { loadFFmpeg, convertToFormat } = converterStore
 const { isReady, isConverting, isSupported, output } = storeToRefs(converterStore)
+
+// Proof of concept
+const convertToGIF = () => {
+  const toFormat: VideoFormat = { mimeType: 'image/gif', extension: 'gif' }
+  convertToFormat(video.value, toFormat)
+}
 
 const updatePreview = (e: Event): void => {
   const files = e?.target?.files ?? []
@@ -43,7 +49,10 @@ onMounted(() => {
     v-else
     class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 mb-5"
   >
-    <div :class="`bg-white rounded md:shadow p-4 ${!video.uri && 'h-60'} flex flex-col items-center justify-center`">
+    <div
+      class="bg-white rounded md:shadow p-4 flex flex-col items-center justify-center"
+      :class="{ 'h-60': !video.uri, 'opacity-50': !isReady }"
+    >
       <video
         v-if="video.uri"
         controls
@@ -60,21 +69,21 @@ onMounted(() => {
       <div>
         <ConvertButton
           :disabled="!isReady || isConverting"
-          :text="isReady ? 'Select Video File' : 'Loading ffmpeg...'"
+          :text="isReady ? 'Select a video file' : 'Loading converter...'"
           @click="$refs.fileInput.click()"
         />
         <ConvertButton
           v-if="video.uri"
           class="ml-2"
           :disabled="isConverting"
-          :text="isConverting ? 'Converting Video...' : 'Convert To GIF'"
-          @click="convertToGIF(video)"
+          :text="isConverting ? 'Converting...' : 'Convert To GIF'"
+          @click="convertToGIF"
         />
       </div>
     </div>
     <div
       class="bg-white rounded md:shadow p-4"
-      :class="{'opacity-50': !output}"
+      :class="{ 'opacity-50': !video.uri }"
     >
       <div class="flex items-center justify-center h-full">
         <div
@@ -94,9 +103,8 @@ onMounted(() => {
         <div
           v-else
           class="text-gray-500 text-xl"
-        >
-          GIF comes here
-        </div>
+          v-text="isConverting ? 'Converting...' : 'Output'"
+        />
       </div>
     </div>
   </div>
