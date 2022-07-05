@@ -17,8 +17,8 @@ const convertToGIF = () => {
   convertToFormat(video.value, toFormat)
 }
 
-const updatePreview = (e: Event): void => {
-  const files = e?.target?.files ?? []
+const updatePreview = (event: Event): void => {
+  const files = (event.target as HTMLInputElement).files || [];
   if (files.length) {
     const file = files[0]
     video.value.uri = URL.createObjectURL(file)
